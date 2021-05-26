@@ -64,7 +64,7 @@ def generateAnimat(records: [[float]], start_state: (float, float), end_state: (
 				else:
 					for mine in mines:
 						if j == mine[1] and k == mine[0]:
-							text = ['landmine'] + text if just_vals else ['landmine']
+							text = ['0'] + text if just_vals else ['0']
 
 				if is_last_frame:
 					for si in range(len(opt_pol)):
