@@ -43,19 +43,19 @@ class gridPoint:
 
     def getOptimal(self,optimal,grid):
         if self.isTerminal == True:
-            optimal.append([self.x,self.y])
+            #optimal.append([self.x,self.y])
             return
         else:
-            optimal.append([self.x,self.y])
+            #optimal.append([self.x,self.y])
             nextValues = []
             #finding the next optimal value
             for next in self.policies:
                 nextValues.append(grid[next[0]][next[1]].value)
 
             maxValue = max(nextValues)
-            #print("Here ",maxValue)
             for next in self.policies:
                 if grid[next[0]][next[1]].value == maxValue:
+                    print(grid[next[0]][next[1]].value,next,sep=' ,')
                     optimal.append(next)
                     return grid[next[0]][next[1]].getOptimal(optimal,grid)
                 
