@@ -13,17 +13,17 @@ def main():
     height = 9
     start = [0,0]
     gamma = 0.8
-    end = [3,4]
+    end = [4,4]
     grid = []
 
 
 
-    #mines = [[3,4],[3,5],[4,5],[3,3],[3,2],[4,2]]
+    mines = [(3,5),(4,5),(3,3),(3,2),(4,2),(3,4)]
     #instatiating grid space and setting each point to zero
     for i in range(height):
         row = []
         for j in range(width):
-            gridpoint = gridPoint(i,j,0,end[0],end[1],gamma)
+            gridpoint = gridPoint(i,j,0,width-1,height-1,gamma)
             gridpoint.makePolicy()
             row.append(gridpoint)
         grid.append(row)
@@ -31,6 +31,14 @@ def main():
     #setting the values for end 
     grid[end[0]][end[1]].value = 150
     grid[end[0]][end[1]].isTerminal = True
+    #setting 0 values for the landmines
+    for row in grid:
+        for point in row:
+            for mine in mines:
+                if point.x == mine[0] and point.y == mine[1]:
+                    point.isTerminal = True
+                    point.value = -10
+                    break
 
     #iterating through the grid
     records = []
@@ -44,8 +52,9 @@ def main():
                     for next in point.policies:
                         nextValues.append(point.getNextStateValue(grid[next[0]][next[1]]))
                     point.value = max(nextValues)
+                    print(nextValues,point.value,sep=" - ")
                 recordrow.append(point.value)
-                print(point.value,end=" ")
+                #print(point.value,end=" ")
             record.append(recordrow)
             print()
         print()
@@ -67,7 +76,7 @@ def main():
     end_state = (end[1],end[0])
 
     mines = []
-    mines = [(3,4),(3,5),(4,5),(3,3),(3,2),(4,2)]  # Uncomment this to check out what mines will look like
+    #mines = [(3,4),(3,5),(4,5),(3,3),(3,2),(4,2)]  # Uncomment this to check out what mines will look like
 
 	# We don't need a list of mine positions since our example doesn't have any
     opt_pol = [(0,0), (1, 0), (2, 0),(3,0), (3, 1),(3, 2),(3, 3),(3, 4)] # The above example has multiple valid optimal policies, this is just one of them.
