@@ -15,18 +15,21 @@ def main():
     gamma = 0.8
     end = [4,4]
     grid = []
+    records = []
 
 
 
     mines = [(3,5),(4,5),(3,3),(3,2),(4,2),(3,4)]
     #instatiating grid space and setting each point to zero
+    record = []
     for i in range(height):
         row = []
         for j in range(width):
-            gridpoint = gridPoint(i,j,0,width-1,height-1,gamma)
+            gridpoint = gridPoint(i,j,-1,width-1,height-1,gamma)
             gridpoint.makePolicy()
             row.append(gridpoint)
         grid.append(row)
+    records.append(grid)
 
     #setting the values for end 
     grid[end[0]][end[1]].value = 150
@@ -41,7 +44,6 @@ def main():
                     break
 
     #iterating through the grid
-    records = []
     for i in range(15):
         record = []
         for row in grid:
@@ -52,9 +54,9 @@ def main():
                     for next in point.policies:
                         nextValues.append(point.getNextStateValue(grid[next[0]][next[1]]))
                     point.value = max(nextValues)
-                    print(nextValues,point.value,sep=" - ")
+                    #print(nextValues,point.value,sep=" - ")
                 recordrow.append(point.value)
-                #print(point.value,end=" ")
+                print(point.value,end=" ")
             record.append(recordrow)
             print()
         print()
@@ -68,8 +70,6 @@ def main():
     for opt in optimal:
         optpol.append((opt[1],opt[0]))
     print("Optimal policy: ",optpol)
-
-
 
 
     start_state = (0, 0)

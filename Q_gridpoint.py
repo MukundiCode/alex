@@ -60,7 +60,7 @@ class gridPoint:
                     return grid[next[0]][next[1]].getOptimal(optimal,grid)
 
     def Q_getNextStateValue(self,nextState):
-        return (nextState.value)
+        return (self.gamma*nextState.value)
 
     def getNextAction(self,epsilon,grid):
         if np.random.random() < epsilon:
@@ -79,9 +79,12 @@ class gridPoint:
 
         else:
             rand = np.random.randint(len(self.policies))
-            self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
-            print(self.value)
-            return [self.policies[rand][0],self.policies[rand][0],rand]
+            if not grid[self.policies[rand][0]][self.policies[rand][0]].isTerminal:
+                self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
+                print(self.value)
+                return [self.policies[rand][0],self.policies[rand][0],rand]
+            else:
+                return -1
             #getting the positions of the 
 
     def __str__(self) -> str:
