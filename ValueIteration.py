@@ -28,8 +28,9 @@ def main():
             gridpoint = gridPoint(i,j,-1,width-1,height-1,gamma)
             gridpoint.makePolicy()
             row.append(gridpoint)
+        record.append(row)
         grid.append(row)
-    records.append(grid)
+    #records.append(record)
 
     #setting the values for end 
     grid[end[0]][end[1]].value = 150

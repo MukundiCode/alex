@@ -18,6 +18,7 @@ class gridPoint:
         self.isTerminal = False
         self.endx = endx
         self.endy = endy
+        self.isEnd = False
 
     def makePolicy(self):
         self.policies = []
@@ -42,7 +43,7 @@ class gridPoint:
         return (self.gamma*nextState.value)
 
     def getOptimal(self,optimal,grid):
-        if self.isTerminal == True:
+        if self.isEnd == True:
             #optimal.append([self.x,self.y])
             return
         else:
@@ -63,7 +64,8 @@ class gridPoint:
         return (self.gamma*nextState.value)
 
     def getNextAction(self,epsilon,grid):
-        if np.random.random() < epsilon:
+        number = np.random.random()
+        if number < epsilon:
             counter = 0
             maxValue = -1000
             action = 0
@@ -73,15 +75,17 @@ class gridPoint:
                     action = counter
                     nextMove = next
                 counter = counter + 1
-            self.value = maxValue
-            print(self.value)
+            if self.isEnd == False:
+                self.value = maxValue
+            #print(self.value)
             return [nextMove[0],nextMove[1],action]
 
         else:
             rand = np.random.randint(len(self.policies))
             if not grid[self.policies[rand][0]][self.policies[rand][0]].isTerminal:
-                self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
-                print(self.value)
+                #if self.isEnd == False:
+                 #   self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
+                #print(self.value)
                 return [self.policies[rand][0],self.policies[rand][0],rand]
             else:
                 return -1

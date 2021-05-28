@@ -14,9 +14,9 @@ def main():
     height = 9
     start = [0,0]
     gamma = 0.8
-    epsilom = 0.9
+    epsilom = 0.95
     learning_rate = 0.9
-    episodes = 100
+    episodes = 500
     end = [4,4]
     grid = []
     Qtable = np.zeros((width, height, 4))
@@ -33,12 +33,13 @@ def main():
             gridpoint = gridPoint(i,j,0,width-1,height-1,gamma)
             gridpoint.makePolicy()
             row.append(gridpoint)
+        record.append(row)
         grid.append(row)
-    records.append(grid)
+    #records.append(record)
 
     #setting the values for end 
     grid[end[0]][end[1]].value = 150
-    #grid[end[0]][end[1]].isTerminal = True
+    grid[end[0]][end[1]].isEnd = True
     #setting 0 values for the landmines
     for row in grid:
         for point in row:
@@ -52,12 +53,14 @@ def main():
     for episode in range(episodes):
 
         #getting the next random location
+        record = []
         random1 = np.random.randint(0,9)
         random2 = np.random.randint(0,9)
-        print(random1,random2)
         row_index = random1
         column_index = random2
         #while the chosen point is not terminal
+        print("*****************************************************")
+        print(row_index,column_index,sep=":")
         while(not is_terminal(grid,row_index,column_index)):
             #get the next action, returns points of action taken and index of action
             nextAction = grid[row_index][column_index].getNextAction(epsilom,grid)
@@ -67,7 +70,6 @@ def main():
                 old_column = column_index
                 row_index = nextAction[0]
                 column_index = nextAction[1]
-
                 #recieve reward and calculate temporal difference 
                 reward = grid[row_index][column_index].value
                 old_q_value = Qtable[old_row,old_column,nextAction[2]]
@@ -77,7 +79,22 @@ def main():
                 new_q_value = old_q_value + (learning_rate * temporal_difference)
                 Qtable[old_row, old_column, nextAction[2]] = new_q_value
                 #print(grid)
-                records.append(grid)
+                #records.append(grid)
+            else:
+                break
+
+        for row in grid:
+            recordrow = []
+            for point in row:
+                recordrow.append(point.value)
+                print(point.value,end=" ")
+            record.append(recordrow)
+            print()
+        print()
+        records.append(record)
+        #print(Qtable)
+        print("*****************************************************")
+        print()
 
      #finding the optimal policy
     optimal = []
@@ -99,7 +116,7 @@ def main():
     opt_pol = [(0,0), (1, 0), (2, 0),(3,0), (3, 1),(3, 2),(3, 3),(3, 4)] # The above example has multiple valid optimal policies, this is just one of them.
 
 
-    anim, fig, ax = generateAnimat(records, start_state, end_state, mines=mines, opt_pol=optpol, 
+    anim, fig, ax = generateAnimat(records, start_state, end_state, mines=mines, opt_pol=opt_pol, 
 		start_val=-10, end_val=100, mine_val=150, just_vals=False, generate_gif=False,
 		vmin = -10, vmax = 150)
 
