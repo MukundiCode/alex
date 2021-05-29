@@ -3,23 +3,23 @@
 
 from gridpoint import gridPoint
 import matplotlib.pyplot as plt
-
+import numpy as np
 from Animate import generateAnimat
 
 
 def main():
     
-    width = 9
-    height = 9
-    start = [0,0]
+    width = 12
+    height = 12
+    start = [2,3]
     gamma = 0.8
-    end = [4,4]
+    end = [11,4]
     grid = []
     records = []
 
 
-
-    mines = [(3,5),(4,5),(3,3),(3,2),(4,2),(3,4)]
+    mines = generateRandomeMines(width,height,70,start,end)
+    #mines = [(3,5),(4,5),(3,3),(3,2),(4,2),(3,4)]
     #instatiating grid space and setting each point to zero
     record = []
     for i in range(height):
@@ -45,7 +45,7 @@ def main():
                     break
 
     #iterating through the grid
-    for i in range(15):
+    for i in range(20):
         record = []
         for row in grid:
             recordrow = []
@@ -57,10 +57,10 @@ def main():
                     point.value = max(nextValues)
                     #print(nextValues,point.value,sep=" - ")
                 recordrow.append(point.value)
-                print(point.value,end=" ")
+                #print(point.value,end=" ")
             record.append(recordrow)
-            print()
-        print()
+            #print()
+        #print()
         records.append(record)
 
     #finding the optimal policy
@@ -73,7 +73,7 @@ def main():
     print("Optimal policy: ",optpol)
 
 
-    start_state = (0, 0)
+    start_state = (start[1], start[0])
     end_state = (end[1],end[0])
 
     mines = []
@@ -88,5 +88,17 @@ def main():
 		vmin = -10, vmax = 150)
 
     plt.show()
+
+
+def generateRandomeMines(width,height,number,start,end):
+    mines = []
+    for mine in range(number):
+        m = (np.random.randint(width),np.random.randint(height))
+        #checking if mine is on start or stop
+        while (m[0]==start[0] and m[1]==start[1]) or (m[0]==end[0 and m[0]== end[1]]):
+            m = (np.random.randint(width),np.random.randint(height))
+        mines.append(m)
+    print("Random mines:",mines)
+    return mines
 
 main()

@@ -5,6 +5,7 @@ from Q_gridpoint import gridPoint
 import matplotlib.pyplot as plt
 import numpy as np
 from Animate import generateAnimat
+import math
 
 
 def main():
@@ -14,23 +15,23 @@ def main():
     height = 9
     start = [0,0]
     gamma = 0.8
-    epsilom = 0.95
+    epsilom = 0
     learning_rate = 0.9
-    episodes = 500
+    episodes = 1000
     end = [4,4]
     grid = []
     Qtable = np.zeros((width, height, 4))
     records = []
 
     #initilizing to zero
-    mines = [(3,5),(4,5),(3,3),(3,2),(4,2),(3,4)]
+    mines = [(3,5),(4,5),(3,3),(3,2)]#,(4,2),(3,4)]
     #mines = []
     #instatiating grid space and setting each point to zero
     record = []
     for i in range(height):
         row = []
         for j in range(width):
-            gridpoint = gridPoint(i,j,0,width-1,height-1,gamma)
+            gridpoint = gridPoint(i,j,-1,width-1,height-1,gamma)
             gridpoint.makePolicy()
             row.append(gridpoint)
         record.append(row)
@@ -50,6 +51,7 @@ def main():
                     break
 
     #iterating through the grid with episodes
+    logNumber = 1
     for episode in range(episodes):
 
         #getting the next random location
@@ -87,14 +89,18 @@ def main():
             recordrow = []
             for point in row:
                 recordrow.append(point.value)
-                print(point.value,end=" ")
+                #print(point.value,end=" ")
             record.append(recordrow)
-            print()
-        print()
+            #print()
+        #print()
         records.append(record)
         #print(Qtable)
         print("*****************************************************")
         print()
+        #increasing epsilon
+        logNumber = logNumber + 0.01
+        epsilom = math.log(logNumber,10)
+        print(epsilom)
 
      #finding the optimal policy
     optimal = []
@@ -116,7 +122,7 @@ def main():
     opt_pol = [(0,0), (1, 0), (2, 0),(3,0), (3, 1),(3, 2),(3, 3),(3, 4)] # The above example has multiple valid optimal policies, this is just one of them.
 
 
-    anim, fig, ax = generateAnimat(records, start_state, end_state, mines=mines, opt_pol=opt_pol, 
+    anim, fig, ax = generateAnimat(records, start_state, end_state, mines=mines, opt_pol=optpol, 
 		start_val=-10, end_val=100, mine_val=150, just_vals=False, generate_gif=False,
 		vmin = -10, vmax = 150)
 

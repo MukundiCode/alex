@@ -77,14 +77,16 @@ class gridPoint:
                 counter = counter + 1
             if self.isEnd == False:
                 self.value = maxValue
+            else:
+                return -1
             #print(self.value)
             return [nextMove[0],nextMove[1],action]
 
         else:
             rand = np.random.randint(len(self.policies))
             if not grid[self.policies[rand][0]][self.policies[rand][0]].isTerminal:
-                #if self.isEnd == False:
-                 #   self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
+                if self.isEnd == False:
+                    self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
                 #print(self.value)
                 return [self.policies[rand][0],self.policies[rand][0],rand]
             else:
