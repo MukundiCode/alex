@@ -18,7 +18,7 @@ def main():
     records = []
 
 
-    mines = generateRandomeMines(width,height,70,start,end)
+    mines = generateRandomeMines(width,height,8,start,end)
     #mines = [(3,5),(4,5),(3,3),(3,2),(4,2),(3,4)]
     #instatiating grid space and setting each point to zero
     record = []
@@ -39,13 +39,16 @@ def main():
     for row in grid:
         for point in row:
             for mine in mines:
-                if point.x == mine[0] and point.y == mine[1]:
+                if point.x == mine[1] and point.y == mine[0]:
                     point.isTerminal = True
                     point.value = -10
                     break
 
     #iterating through the grid
-    for i in range(20):
+    converge = False
+    index = 0
+    #for i in range(20):
+    while (converge == False):
         record = []
         for row in grid:
             recordrow = []
@@ -61,12 +64,16 @@ def main():
             record.append(recordrow)
             #print()
         #print()
+        #print(record)
+        if index > 1:
+            converge = is_converge(record,records[index-1])
+        index = index + 1
         records.append(record)
 
     #finding the optimal policy
     optimal = []
     optimal.append(start)
-    grid[start[0]][start[1]].getOptimal(optimal,grid)
+    grid[start[0]][start[1]].getOptimal(optimal,grid,start[1],start[0])
     optpol = []
     for opt in optimal:
         optpol.append((opt[1],opt[0]))
@@ -75,12 +82,6 @@ def main():
 
     start_state = (start[1], start[0])
     end_state = (end[1],end[0])
-
-    mines = []
-    #mines = [(3,4),(3,5),(4,5),(3,3),(3,2),(4,2)]  # Uncomment this to check out what mines will look like
-
-	# We don't need a list of mine positions since our example doesn't have any
-    opt_pol = [(0,0), (1, 0), (2, 0),(3,0), (3, 1),(3, 2),(3, 3),(3, 4)] # The above example has multiple valid optimal policies, this is just one of them.
 
 
     anim, fig, ax = generateAnimat(records, start_state, end_state, mines=mines, opt_pol=optpol, 
@@ -95,10 +96,17 @@ def generateRandomeMines(width,height,number,start,end):
     for mine in range(number):
         m = (np.random.randint(width),np.random.randint(height))
         #checking if mine is on start or stop
-        while (m[0]==start[0] and m[1]==start[1]) or (m[0]==end[0 and m[0]== end[1]]):
+        while (m[1]==start[0] and m[0]==start[1]) or (m[1]==end[0] and m[0]== end[1]):
             m = (np.random.randint(width),np.random.randint(height))
         mines.append(m)
     print("Random mines:",mines)
     return mines
+
+def is_converge(prev,current):
+    for row in range(len(prev)):
+        for column in range(len(prev)):
+            if int(prev[row][column]) != int(current[row][column]):
+                return False
+    return True
 
 main()

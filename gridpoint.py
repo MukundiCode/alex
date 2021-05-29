@@ -41,7 +41,7 @@ class gridPoint:
     def getNextStateValue(self,nextState):
         return (self.gamma*nextState.value)
 
-    def getOptimal(self,optimal,grid):
+    def getOptimal(self,optimal,grid,prev_x,prev_y):
         if self.isTerminal == True:
             #optimal.append([self.x,self.y])
             return
@@ -54,10 +54,16 @@ class gridPoint:
 
             maxValue = max(nextValues)
             for next in self.policies:
-                if grid[next[0]][next[1]].value == maxValue:
-                    print(grid[next[0]][next[1]].value,next,sep=' ,')
-                    optimal.append(next)
-                    return grid[next[0]][next[1]].getOptimal(optimal,grid)
+                print(next,prev_x,":",prev_y)
+                if (grid[next[0]][next[1]].value == maxValue):
+                    if (next[0] != prev_x and next[1] != prev_y):
+                        print(grid[next[0]][next[1]].value,next,sep=' ,')
+                        optimal.append(next)
+                        return grid[next[0]][next[1]].getOptimal(optimal,grid,next[0],next[1])
+            #cyclic route found
+            print("No route to end found")
+            return 
+            
 
     def Q_getNextStateValue(self,nextState):
         return (nextState.value)
