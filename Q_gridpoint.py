@@ -28,15 +28,23 @@ class gridPoint:
         right = self.y +1
         if (top >= 0):
             self.policies.append([self.x-1,self.y])
+        else:
+            self.policies.append(None)
 
         if (bottom <= self.endx):
             self.policies.append([self.x + 1,self.y])
+        else:
+            self.policies.append(None)
 
         if (left >= 0):
             self.policies.append([self.x,self.y -1])
+        else:
+            self.policies.append(None)
 
         if (right <= self.endy):
             self.policies.append([self.x,self.y+1])
+        else:
+            self.policies.append(None)
 
     #gets the value of the next state, right now not including the reward of making the move 
     def getNextStateValue(self,nextState):
@@ -51,21 +59,60 @@ class gridPoint:
             nextValues = []
             #finding the next optimal value
             for next in self.policies:
-                nextValues.append(grid[next[0]][next[1]].value)
+                if next != None:
+                    nextValues.append(grid[next[0]][next[1]].value)
 
             maxValue = max(nextValues)
             for next in self.policies:
-                if grid[next[0]][next[1]].value == maxValue:
-                    print(grid[next[0]][next[1]].value,next,sep=' ,')
-                    optimal.append(next)
-                    return grid[next[0]][next[1]].getOptimal(optimal,grid)
+                if next != None:
+                    if grid[next[0]][next[1]].value == maxValue:
+                        print(grid[next[0]][next[1]].value,next,sep=' ,')
+                        optimal.append(next)
+                        return grid[next[0]][next[1]].getOptimal(optimal,grid)
+            #cyclic route found
+            print("No possible route to end point")
+            return 
 
     def Q_getNextStateValue(self,nextState):
         return (self.gamma*nextState.value)
 
-    def getNextAction(self,epsilon,grid):
+    def getNextAction(self,epsilon,grid,qtable):
         number = np.random.random()
         if number < epsilon:
+            nextAction = np.argmax(qtable[self.x,self.y])
+            #print(nextAction,self.policies)
+            #print(qtable[self.x,self.y])
+            nextMove = self.policies[nextAction]
+            if nextMove == None:
+                return -1
+            if self.isEnd == False:
+                self.value =  self.Q_getNextStateValue(grid[nextMove[0]][nextMove[1]])
+            else:
+                return -1
+            #print(self.value)
+            return [nextMove[0],nextMove[1],nextAction]
+
+        else:
+            rand = np.random.randint(len(self.policies))
+            if not self.policies[rand] == None:
+                if not grid[self.policies[rand][0]][self.policies[rand][0]].isTerminal:
+                    if self.isEnd == False:
+                        self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
+                    #print(self.value)
+                    return [self.policies[rand][0],self.policies[rand][0],rand]
+                else:
+                    self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
+                    return -1
+                #getting the positions of the 
+            else:
+                return -1
+
+    def getNextAction2(self,epsilon,grid,qtable):
+        number = np.random.random()
+        if number < epsilon:
+            nextAction = np.argmax(qtable[self.x,self.y])
+            nextMove = self.policies[nextAction]
+            self.value =  self.Q_getNextStateValue(grid[nextMove[0]][nextMove[1]])
             counter = 0
             maxValue = -1000
             action = 0
@@ -90,6 +137,7 @@ class gridPoint:
                 #print(self.value)
                 return [self.policies[rand][0],self.policies[rand][0],rand]
             else:
+                #self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
                 return -1
             #getting the positions of the 
 

@@ -9,16 +9,15 @@ from Animate import generateAnimat
 
 def main():
     
-    width = 12
-    height = 12
+    width = 30
+    height = 30
     start = [2,3]
     gamma = 0.8
-    end = [11,4]
+    end = [28,27]
     grid = []
     records = []
 
-
-    mines = generateRandomeMines(width,height,8,start,end)
+    mines = generateRandomeMines(width,height,150,start,end)
     #mines = [(3,5),(4,5),(3,3),(3,2),(4,2),(3,4)]
     #instatiating grid space and setting each point to zero
     record = []
@@ -33,7 +32,7 @@ def main():
     #records.append(record)
 
     #setting the values for end 
-    grid[end[0]][end[1]].value = 150
+    grid[end[0]][end[1]].value = 300
     grid[end[0]][end[1]].isTerminal = True
     #setting 0 values for the landmines
     for row in grid:
@@ -99,7 +98,7 @@ def generateRandomeMines(width,height,number,start,end):
         while (m[1]==start[0] and m[0]==start[1]) or (m[1]==end[0] and m[0]== end[1]):
             m = (np.random.randint(width),np.random.randint(height))
         mines.append(m)
-    print("Random mines:",mines)
+    #print("Random mines:",mines)
     return mines
 
 def is_converge(prev,current):

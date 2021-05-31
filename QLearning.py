@@ -11,27 +11,28 @@ import math
 def main():
     #defining variables
 
-    width = 9
-    height = 9
+    width = 12
+    height = 12
     start = [0,0]
     gamma = 0.8
     epsilom = 0
-    learning_rate = 0.9
-    episodes = 1000
-    end = [4,4]
+    learning_rate = 0.2
+    episodes = 20000
+    end = [10,8]
     grid = []
     Qtable = np.zeros((width, height, 4))
     records = []
 
     #initilizing to zero
-    mines = [(3,5),(4,5),(3,3),(3,2)]#,(4,2),(3,4)]
+    #mines = [(3,5),(4,5),(3,3),(3,2)]#,(4,2),(3,4)]
+    mines = generateRandomeMines(width,height,40,start,end)
     #mines = []
     #instatiating grid space and setting each point to zero
     record = []
     for i in range(height):
         row = []
         for j in range(width):
-            gridpoint = gridPoint(i,j,-1,width-1,height-1,gamma)
+            gridpoint = gridPoint(i,j,1,width-1,height-1,gamma)
             gridpoint.makePolicy()
             row.append(gridpoint)
         record.append(row)
@@ -45,7 +46,7 @@ def main():
     for row in grid:
         for point in row:
             for mine in mines:
-                if point.x == mine[0] and point.y == mine[1]:
+                if point.x == mine[1] and point.y == mine[0]:
                     point.isTerminal = True
                     point.value = -10
                     break
@@ -56,22 +57,23 @@ def main():
 
         #getting the next random location
         record = []
-        random1 = np.random.randint(0,9)
-        random2 = np.random.randint(0,9)
+        random1 = np.random.randint(0,width)
+        random2 = np.random.randint(0,height)
         row_index = random1
         column_index = random2
         #while the chosen point is not terminal
-        print("*****************************************************")
-        print(row_index,column_index,sep=":")
+        #print("*****************************************************")
         while(not is_terminal(grid,row_index,column_index)):
             #get the next action, returns points of action taken and index of action
-            nextAction = grid[row_index][column_index].getNextAction(epsilom,grid)
+            nextAction = grid[row_index][column_index].getNextAction(epsilom,grid,Qtable)
+            #print(nextAction)
             if not nextAction == -1:
                 #perform next action, move
                 old_row = row_index
                 old_column = column_index
                 row_index = nextAction[0]
                 column_index = nextAction[1]
+                #print(old_row,old_column)
                 #recieve reward and calculate temporal difference 
                 reward = grid[row_index][column_index].value
                 old_q_value = Qtable[old_row,old_column,nextAction[2]]
@@ -89,23 +91,24 @@ def main():
             recordrow = []
             for point in row:
                 recordrow.append(point.value)
-                #print(point.value,end=" ")
+                print(point.value,end=" ")
             record.append(recordrow)
-            #print()
-        #print()
+            print()
+        print()
         records.append(record)
         #print(Qtable)
-        print("*****************************************************")
-        print()
-        #increasing epsilon
-        logNumber = logNumber + 0.01
-        epsilom = math.log(logNumber,10)
-        print(epsilom)
+        #print("*****************************************************")
+        #print()
+        #increasing epsilon linearly 
+        gradient = 1/episodes
+        epsilom = gradient*episode
+        
+        #print(epsilom)
 
      #finding the optimal policy
     optimal = []
     optimal.append(start)
-    grid[start[0]][start[1]].getOptimal(optimal,grid)
+    #grid[start[0]][start[1]].getOptimal(optimal,grid)
     optpol = []
     for opt in optimal:
         optpol.append((opt[1],opt[0]))
@@ -115,7 +118,7 @@ def main():
     start_state = (0, 0)
     end_state = (end[1],end[0])
 
-    mines = []
+    #mines = []
     #mines = [(3,4),(3,5),(4,5),(3,3),(3,2),(4,2)]  # Uncomment this to check out what mines will look like
 
 	# We don't need a list of mine positions since our example doesn't have any
@@ -130,5 +133,24 @@ def main():
 
 def is_terminal(grid,x,y):
     return grid[x][y].isTerminal
+
+
+def generateRandomeMines(width,height,number,start,end):
+    mines = []
+    for mine in range(number):
+        m = (np.random.randint(width),np.random.randint(height))
+        #checking if mine is on start or stop
+        while (m[1]==start[0] and m[0]==start[1]) or (m[1]==end[0] and m[0]== end[1]):
+            m = (np.random.randint(width),np.random.randint(height))
+        mines.append(m)
+    #print("Random mines:",mines)
+    return mines
+
+def is_converge(prev,current):
+    for row in range(len(prev)):
+        for column in range(len(prev)):
+            if int(prev[row][column]) != int(current[row][column]):
+                return False
+    return True
 
 main()

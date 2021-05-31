@@ -54,14 +54,20 @@ class gridPoint:
 
             maxValue = max(nextValues)
             for next in self.policies:
-                print(next,prev_x,":",prev_y)
-                if (grid[next[0]][next[1]].value == maxValue):
-                    if (next[0] != prev_x and next[1] != prev_y):
-                        print(grid[next[0]][next[1]].value,next,sep=' ,')
+                if len(optimal) > 1:
+                    if (grid[next[0]][next[1]].value == maxValue):
+                        #print("Optimal is: ",optimal)
+                        if not (next[0] == optimal[-2][0] and next[1] == optimal[-2][1]):
+                            #print(grid[next[0]][next[1]].value,next,sep=' ,')
+                            optimal.append(next)
+                            return grid[next[0]][next[1]].getOptimal(optimal,grid,next[0],next[1])
+                else:
+                    if (grid[next[0]][next[1]].value == maxValue):
                         optimal.append(next)
                         return grid[next[0]][next[1]].getOptimal(optimal,grid,next[0],next[1])
+
             #cyclic route found
-            print("No route to end found")
+            print("No possible route to end point")
             return 
             
 
@@ -85,7 +91,7 @@ class gridPoint:
 
         else:
             rand = np.random.randint(len(self.policies))
-            self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
+            #self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
             print(self.value)
             return [self.policies[rand][0],self.policies[rand][0],rand]
             #getting the positions of the 
