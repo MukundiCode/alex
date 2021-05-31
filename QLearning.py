@@ -11,21 +11,21 @@ import math
 def main():
     #defining variables
 
-    width = 12
-    height = 12
+    width = 30
+    height = 30
     start = [0,0]
     gamma = 0.8
     epsilom = 0
-    learning_rate = 0.2
-    episodes = 20000
-    end = [10,8]
+    learning_rate = 0.4
+    episodes = 200000
+    end = [26,27]
     grid = []
     Qtable = np.zeros((width, height, 4))
     records = []
 
     #initilizing to zero
     #mines = [(3,5),(4,5),(3,3),(3,2)]#,(4,2),(3,4)]
-    mines = generateRandomeMines(width,height,40,start,end)
+    mines = generateRandomeMines(width,height,80,start,end)
     #mines = []
     #instatiating grid space and setting each point to zero
     record = []
@@ -40,7 +40,7 @@ def main():
     #records.append(record)
 
     #setting the values for end 
-    grid[end[0]][end[1]].value = 150
+    grid[end[0]][end[1]].value = 200
     grid[end[0]][end[1]].isEnd = True
     #setting 0 values for the landmines
     for row in grid:
@@ -57,10 +57,15 @@ def main():
 
         #getting the next random location
         record = []
-        random1 = np.random.randint(0,width)
-        random2 = np.random.randint(0,height)
+        if (episode/episodes < 0.9):
+            random1 = np.random.randint(0,width)
+            random2 = np.random.randint(0,height)
+        else:
+            random1 = np.random.randint(0,int(width/2))
+            random2 = np.random.randint(0,int(height/2))
         row_index = random1
         column_index = random2
+
         #while the chosen point is not terminal
         #print("*****************************************************")
         while(not is_terminal(grid,row_index,column_index)):
@@ -86,29 +91,24 @@ def main():
                 #records.append(grid)
             else:
                 break
-
-        for row in grid:
-            recordrow = []
-            for point in row:
-                recordrow.append(point.value)
-                print(point.value,end=" ")
-            record.append(recordrow)
-            print()
-        print()
-        records.append(record)
-        #print(Qtable)
-        #print("*****************************************************")
-        #print()
+        if episode%10000 == 0:
+            for row in grid:
+                recordrow = []
+                for point in row:
+                    recordrow.append(point.value)
+                record.append(recordrow)
+            records.append(record)
         #increasing epsilon linearly 
         gradient = 1/episodes
         epsilom = gradient*episode
-        
-        #print(epsilom)
+        #learning_rate = 1/(1+episodes)
+        if episode%10000 == 0:
+            print("In the :",episode)
 
      #finding the optimal policy
     optimal = []
     optimal.append(start)
-    #grid[start[0]][start[1]].getOptimal(optimal,grid)
+    grid[start[0]][start[1]].getOptimal(optimal,grid,Qtable)
     optpol = []
     for opt in optimal:
         optpol.append((opt[1],opt[0]))
@@ -130,6 +130,7 @@ def main():
 		vmin = -10, vmax = 150)
 
     plt.show()
+    #grid[start[0]][start[1]].getOptimal(optimal,grid,Qtable)
 
 def is_terminal(grid,x,y):
     return grid[x][y].isTerminal
@@ -152,5 +153,8 @@ def is_converge(prev,current):
             if int(prev[row][column]) != int(current[row][column]):
                 return False
     return True
+
+#def getOptimalPolicy(grid):
+
 
 main()

@@ -50,7 +50,25 @@ class gridPoint:
     def getNextStateValue(self,nextState):
         return (self.gamma*nextState.value)
 
-    def getOptimal(self,optimal,grid):
+    def getOptimal(self,optimal,grid,qtable):
+        if self.isEnd == True:
+            #optimal.append([self.x,self.y])
+            return
+        else:
+            nextAction = np.argmax(qtable[self.x,self.y])
+            #print(nextAction,self.policies)
+            #print(qtable[self.x,self.y])
+            nextMove = self.policies[nextAction]
+            if nextMove == None:
+                return 
+            #print(grid[nextMove[0]][nextMove[1]].value,next,sep=' ,')
+            optimal.append(nextMove)
+            return grid[nextMove[0]][nextMove[1]].getOptimal(optimal,grid,qtable)
+            #cyclic route found
+        #print("No possible route to end point")
+        #return 
+
+    def getOptimal_2(self,optimal,grid):
         if self.isEnd == True:
             #optimal.append([self.x,self.y])
             return
@@ -72,6 +90,7 @@ class gridPoint:
             #cyclic route found
             print("No possible route to end point")
             return 
+
 
     def Q_getNextStateValue(self,nextState):
         return (self.gamma*nextState.value)
@@ -101,7 +120,7 @@ class gridPoint:
                     #print(self.value)
                     return [self.policies[rand][0],self.policies[rand][0],rand]
                 else:
-                    self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
+                    #self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
                     return -1
                 #getting the positions of the 
             else:
