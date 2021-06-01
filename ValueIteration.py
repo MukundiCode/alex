@@ -17,7 +17,7 @@ def main():
     grid = []
     records = []
 
-    mines = generateRandomeMines(width,height,150,start,end)
+    mines = generateRandomeMines(width,height,300,start,end)
     #mines = [(3,5),(4,5),(3,3),(3,2),(4,2),(3,4)]
     #instatiating grid space and setting each point to zero
     record = []
@@ -104,7 +104,7 @@ def generateRandomeMines(width,height,number,start,end):
 def is_converge(prev,current):
     for row in range(len(prev)):
         for column in range(len(prev)):
-            if int(prev[row][column]) != int(current[row][column]):
+            if prev[row][column] != current[row][column]:
                 return False
     return True
 

@@ -14,18 +14,18 @@ def main():
     width = 30
     height = 30
     start = [0,0]
-    gamma = 0.8
+    gamma = 0.99
     epsilom = 0
     learning_rate = 0.4
     episodes = 200000
-    end = [26,27]
+    end = [18,18]
     grid = []
     Qtable = np.zeros((width, height, 4))
     records = []
 
     #initilizing to zero
     #mines = [(3,5),(4,5),(3,3),(3,2)]#,(4,2),(3,4)]
-    mines = generateRandomeMines(width,height,80,start,end)
+    mines = generateRandomeMines(width,height,90,start,end)
     #mines = []
     #instatiating grid space and setting each point to zero
     record = []
@@ -40,7 +40,7 @@ def main():
     #records.append(record)
 
     #setting the values for end 
-    grid[end[0]][end[1]].value = 200
+    grid[end[0]][end[1]].value = 150
     grid[end[0]][end[1]].isEnd = True
     #setting 0 values for the landmines
     for row in grid:
@@ -53,7 +53,7 @@ def main():
 
     #iterating through the grid with episodes
     logNumber = 1
-    for episode in range(episodes):
+    for episode in range(episodes+1):
 
         #getting the next random location
         record = []
@@ -80,7 +80,7 @@ def main():
                 column_index = nextAction[1]
                 #print(old_row,old_column)
                 #recieve reward and calculate temporal difference 
-                reward = grid[row_index][column_index].value
+                reward = grid[row_index][column_index].value * gamma
                 old_q_value = Qtable[old_row,old_column,nextAction[2]]
                 temporal_difference = reward + (gamma * np.max(Qtable[row_index,column_index])) - old_q_value
 
@@ -96,8 +96,11 @@ def main():
                 recordrow = []
                 for point in row:
                     recordrow.append(point.value)
+                    #print(point.value,end=" ")
                 record.append(recordrow)
+                #print()
             records.append(record)
+            #print()
         #increasing epsilon linearly 
         gradient = 1/episodes
         epsilom = gradient*episode
@@ -154,7 +157,13 @@ def is_converge(prev,current):
                 return False
     return True
 
-#def getOptimalPolicy(grid):
-
+def getOptimalPolicy(grid,qtable,start):
+    policy = []
+    policy.append(start)
+    nextAction = np.argmax(qtable[start[0],start[1]])
+    nextMove = grid[start[0]][start[1]].policies[nextAction]
+    previous = start
+    while is_terminal(grid,nextMove[0],nextMove[1]) == False:
+        print('')
 
 main()

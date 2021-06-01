@@ -120,7 +120,7 @@ class gridPoint:
                     #print(self.value)
                     return [self.policies[rand][0],self.policies[rand][0],rand]
                 else:
-                    #self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
+                    self.value = self.Q_getNextStateValue(grid[self.policies[rand][0]][self.policies[rand][0]])
                     return -1
                 #getting the positions of the 
             else:
