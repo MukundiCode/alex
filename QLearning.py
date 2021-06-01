@@ -17,7 +17,7 @@ def main():
     gamma = 0.99
     epsilom = 0
     learning_rate = 0.4
-    episodes = 200000
+    episodes = 100000
     end = [18,18]
     grid = []
     Qtable = np.zeros((width, height, 4))
@@ -25,7 +25,7 @@ def main():
 
     #initilizing to zero
     #mines = [(3,5),(4,5),(3,3),(3,2)]#,(4,2),(3,4)]
-    mines = generateRandomeMines(width,height,90,start,end)
+    mines = generateRandomeMines(width,height,200,start,end)
     #mines = []
     #instatiating grid space and setting each point to zero
     record = []

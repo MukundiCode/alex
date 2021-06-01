@@ -61,6 +61,11 @@ class gridPoint:
             nextMove = self.policies[nextAction]
             if nextMove == None:
                 return 
+            for move in optimal:
+                if move == nextMove :
+                    print("No optimal route found")
+                    print(move,optimal)
+                    return
             #print(grid[nextMove[0]][nextMove[1]].value,next,sep=' ,')
             optimal.append(nextMove)
             return grid[nextMove[0]][nextMove[1]].getOptimal(optimal,grid,qtable)
