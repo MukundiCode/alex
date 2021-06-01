@@ -44,7 +44,7 @@ class gridPoint:
     def getOptimal(self,optimal,grid,prev_x,prev_y):
         if self.isTerminal == True:
             #optimal.append([self.x,self.y])
-            return
+            return True
         else:
             #optimal.append([self.x,self.y])
             nextValues = []
@@ -67,7 +67,7 @@ class gridPoint:
                         return grid[next[0]][next[1]].getOptimal(optimal,grid,next[0],next[1])
 
             #cyclic route found
-            print("No possible route to end point")
+            print("No possible route to end point,please run the program again")
             return 
             
 

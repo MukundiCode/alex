@@ -5,20 +5,41 @@ from gridpoint import gridPoint
 import matplotlib.pyplot as plt
 import numpy as np
 from Animate import generateAnimat
+import sys
 
 
 def main():
     
-    width = 30
-    height = 30
-    start = [2,3]
-    gamma = 0.8
-    end = [28,27]
+    #setting defaults
+    width = 12
+    height = 12
+    start = [0,0]
+    gamma = 0.85
+    end = [11,11]
+    number_of_mines = 5
+
+    if len(sys.argv) > 3:
+        width = eval(sys.argv[1])
+        height = eval(sys.argv[2])
+        for i in range(len(sys.argv)):
+            if sys.argv[i] == "-start":
+                start = [int(sys.argv[i+1]),int(sys.argv[i+2])]
+                print(start)
+            elif sys.argv[i] == "-end":
+                end = [int(sys.argv[i+1]),int(sys.argv[i+2])]
+                print(end)
+            elif sys.argv[i] == "-k":
+                number_of_mines = eval(sys.argv[i+1])
+            elif sys.argv[i] == "-gamma" :
+                gamma = eval(sys.argv[i+1])
+
     grid = []
     records = []
 
-    mines = generateRandomeMines(width,height,300,start,end)
-    #mines = [(3,5),(4,5),(3,3),(3,2),(4,2),(3,4)]
+    mines = generateRandomeMines(width,height,number_of_mines,start,end)
+    print("Starting value itaration.")
+    print("Starting point:",start)
+    print("Ending point:",end)
     #instatiating grid space and setting each point to zero
     record = []
     for i in range(height):
@@ -72,11 +93,13 @@ def main():
     #finding the optimal policy
     optimal = []
     optimal.append(start)
-    grid[start[0]][start[1]].getOptimal(optimal,grid,start[1],start[0])
     optpol = []
-    for opt in optimal:
-        optpol.append((opt[1],opt[0]))
-    print("Optimal policy: ",optpol)
+    if grid[start[0]][start[1]].getOptimal(optimal,grid,start[1],start[0]) == True:
+        for opt in optimal:
+            optpol.append((opt[1],opt[0]))
+        print("Optimal policy: ",optpol)
+    else:
+        print("No optimal route found, please try again with more episodes, a higher learning rate, or less mines.")
 
 
     start_state = (start[1], start[0])

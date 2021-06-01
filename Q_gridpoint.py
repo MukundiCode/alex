@@ -53,7 +53,7 @@ class gridPoint:
     def getOptimal(self,optimal,grid,qtable):
         if self.isEnd == True:
             #optimal.append([self.x,self.y])
-            return
+            return True
         else:
             nextAction = np.argmax(qtable[self.x,self.y])
             #print(nextAction,self.policies)

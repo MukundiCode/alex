@@ -6,27 +6,54 @@ import matplotlib.pyplot as plt
 import numpy as np
 from Animate import generateAnimat
 import math
+import sys
 
 
 def main():
     #defining variables
-
-    width = 30
-    height = 30
+    
+    width = 12
+    height = 12
     start = [0,0]
     gamma = 0.99
     epsilom = 0
     learning_rate = 0.4
     episodes = 100000
-    end = [18,18]
+    end = [11,11]
+    number_of_mines = 5
+
+    if len(sys.argv) > 3:
+        width = eval(sys.argv[1])
+        height = eval(sys.argv[2])
+        for i in range(len(sys.argv)):
+            if sys.argv[i] == "-start":
+                start = [int(sys.argv[i+1]),int(sys.argv[i+2])]
+                print(start)
+            elif sys.argv[i] == "-end":
+                end = [int(sys.argv[i+1]),int(sys.argv[i+2])]
+                print(end)
+            elif sys.argv[i] == "-k":
+                number_of_mines = eval(sys.argv[i+1])
+            elif sys.argv[i] == "-gamma" :
+                gamma = eval(sys.argv[i+1])
+            elif sys.argv[i] == "-learning":
+                learning_rate = eval(sys.argv[i+1])
+            elif sys.argv[i] == "-epochs":
+                epsilom = eval(sys.argv[i+1])
+            elif sys.argv[i] == "-episodes":
+                episodes = eval(sys.argv[i+1])
+
+
+
     grid = []
     Qtable = np.zeros((width, height, 4))
     records = []
-
     #initilizing to zero
     #mines = [(3,5),(4,5),(3,3),(3,2)]#,(4,2),(3,4)]
-    mines = generateRandomeMines(width,height,200,start,end)
-    #mines = []
+    mines = generateRandomeMines(width,height,number_of_mines,start,end)
+    print("Starting Q Learning.")
+    print("Starting point:",start)
+    print("Ending point:",end)
     #instatiating grid space and setting each point to zero
     record = []
     for i in range(height):
@@ -106,17 +133,19 @@ def main():
         epsilom = gradient*episode
         #learning_rate = 1/(1+episodes)
         if episode%10000 == 0:
-            print("In the :",episode)
+            print(episode,"episodes done, recorded one to output.")
 
      #finding the optimal policy
     optimal = []
     optimal.append(start)
-    grid[start[0]][start[1]].getOptimal(optimal,grid,Qtable)
     optpol = []
-    for opt in optimal:
-        optpol.append((opt[1],opt[0]))
-    print("Optimal policy: ",optpol)
+    if grid[start[0]][start[1]].getOptimal(optimal,grid,Qtable) == True:
+        for opt in optimal:
+            optpol.append((opt[1],opt[0]))
+        print("Optimal policy: ",optpol)
 
+    else:
+        print("No optimal route found, please try again with more episodes, a higher learning rate, or less mines.")
 
     start_state = (0, 0)
     end_state = (end[1],end[0])
