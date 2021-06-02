@@ -14,13 +14,13 @@ def main():
     width = 12
     height = 12
     start = [0,0]
-    gamma = 0.85
+    gamma = 0.95
     end = [11,11]
     number_of_mines = 5
 
-    if len(sys.argv) > 3:
+    if len(sys.argv) > 2:
         width = eval(sys.argv[1])
-        height = eval(sys.argv[2])
+        height = eval(sys.argv[1])
         for i in range(len(sys.argv)):
             if sys.argv[i] == "-start":
                 start = [int(sys.argv[i+1]),int(sys.argv[i+2])]

@@ -22,9 +22,10 @@ def main():
     end = [11,11]
     number_of_mines = 5
 
-    if len(sys.argv) > 3:
+    print(len(sys.argv))
+    if len(sys.argv) > 2:
         width = eval(sys.argv[1])
-        height = eval(sys.argv[2])
+        height = eval(sys.argv[1])
         for i in range(len(sys.argv)):
             if sys.argv[i] == "-start":
                 start = [int(sys.argv[i+1]),int(sys.argv[i+2])]
@@ -51,7 +52,7 @@ def main():
     #initilizing to zero
     #mines = [(3,5),(4,5),(3,3),(3,2)]#,(4,2),(3,4)]
     mines = generateRandomeMines(width,height,number_of_mines,start,end)
-    print("Starting Q Learning.")
+    print("Starting Q Learning with grid size:" ,width,"x",height)
     print("Starting point:",start)
     print("Ending point:",end)
     #instatiating grid space and setting each point to zero
